@@ -57,5 +57,13 @@ event Approval(address indexed owner , address indexed approved, uint256 indexed
         emit Approval(owner, _to, tokenId);
 
     }
-
+    function _exists(uint256 tokenId) internal view returns(bool){
+        return (_tokenOwner[tokenId] != address(0));
+    }
+    
+    function isApprovedOrOwner(address spender, uint256 tokenId) internal view returns(bool){
+        require(_exists(tokenId));
+        address owner = ownerOf(tokenId);
+        return(spender == owner || _tokenApprovals[tokenId] == spender);
+    }
 }
