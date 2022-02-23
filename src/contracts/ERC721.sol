@@ -1,23 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract ERC721 {
 
-event Transfer(address indexed from, address indexed to,uint256 indexed tokenId);
-event Approval(address indexed owner , address indexed approved, uint256 indexed tokenId);
+import './ERC165.sol';
+import './interfaces/IERC721.sol';
+
+
+
+
+contract ERC721 is ERC165,IERC721 {
+
+
 
     mapping (uint256 => address) private _tokenOwner;
     mapping (address => uint256) private _ownerTokensCount;
     mapping (uint256 => address) private _tokenApprovals;
 
+     constructor(){
+        _registerInterface(bytes4(keccak256('balanceOf(bytes4)')^keccak256('ownerOf(bytes4)')^keccak256('transferFrom(bytes4)')));
+    }
 
-    function balanceOf(address _owner) public view returns (uint256){
+
+    function balanceOf(address _owner) public override view returns (uint256){
        require(_owner != address(0));
       
         return _ownerTokensCount[_owner];
     }
 
-    function ownerOf(uint256 tokenId) view public returns (address){
+    function ownerOf(uint256 tokenId) view override public returns (address){
         require(_tokenOwner[tokenId] != address(0));
         return _tokenOwner[tokenId];
     }
@@ -44,7 +54,7 @@ event Approval(address indexed owner , address indexed approved, uint256 indexed
 
     }
 
-    function transferFrom(address _from, address _to, uint256 _tokenId) public {
+    function transferFrom(address _from, address _to, uint256 _tokenId) override public {
         _transferFrom( _from,  _to,  _tokenId);
     }
 
